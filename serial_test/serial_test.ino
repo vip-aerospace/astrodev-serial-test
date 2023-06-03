@@ -56,7 +56,7 @@ uint8_t rfconfigpayload[] = {
   0x00                                    // Post xmit delay (Delay in tens of milliseconds. Default 0 (NOT IMPLEMENTED USE POSTAMBLE))
 };
 // Message to be periodically transmitted by the radio.
-uint8_t becaondatapayload[] = { "Hello Beacon!" };
+uint8_t beacondatapayload[] = { "Hello Beacon!" };
 // Beacon configuration data.
 uint8_t beaconconfigpayload[] = { 0x00 }; // How frequently to transmit the beacon (value of 0 is off, 2.5 sec delay per LSB)
 // Digital I/O key payload.
@@ -222,7 +222,7 @@ void loop() {
       // Send a beacon data packet. This packet has an N-byte payload.
       case 'i':
         // The payload is the beacon message that the radio periodically transmits.
-        payloadsize = sizeof(becaondatapayload);
+        payloadsize = sizeof(beacondatapayload);
 
         // Fill in the header.
         setHeader(header, 0x10, payloadsize);
@@ -234,7 +234,7 @@ void loop() {
         // Copy the header to the packet.
         memcpy(packet, header, HEADERSIZE);
         // Copy the payload to the packet.
-        memcpy(packet + HEADERSIZE, becaondatapayload, payloadsize);
+        memcpy(packet + HEADERSIZE, beacondatapayload, payloadsize);
 
         // Calculate the checksum over the header and payload.
         calcCS(&packet[CHECKSUMSIZE], packetSize - 4, &packet[packetSize - CHECKSUMSIZE]);
