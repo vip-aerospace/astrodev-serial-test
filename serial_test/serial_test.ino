@@ -360,12 +360,17 @@ void loop() {
     // Read 8 bytes into received header.
     Serial1.readBytes(receivedHeader, 8);  
     // Determine the size of the payload as described in the received header.
-    payloadsize = reverseBits(receivedHeader[5]);
+    payloadsize = (receivedHeader[4] << 8) | receivedHeader[5];
     // If there are bytes in the packet's payload,
     if(payloadsize){
       // receive that payload, plus the two-byte checksum.
       Serial1.readBytes(receivedPayload, payloadsize + CHECKSUMSIZE);
     }
+    Serial.print("Received ");
+    Serial.print(payloadsize);
+    Serial.println("-byte payload.");
+    // Interpet the received packet.
+    decodePacket(receivedPayload, receivedHeader[3]);
     // Print the raw packet for interpetation.
     Serial.println("Raw packet: ");
     printHexDump(receivedHeader, 8);
