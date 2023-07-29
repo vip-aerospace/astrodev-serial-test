@@ -96,10 +96,159 @@ void decodePacket(byte *payload, byte opcode){
             // No need to decode the data, it is printed raw in the hexdump.
             break;
         // A transceiver configuration packet.
-        case 5:
+        case 5: {
+            Serial.print("interface_baud_rate: ");
+            uint8_t interface_baud_rate = payload[0];
+            switch (interface_baud_rate){
+                case 0:
+                    Serial.println("9600");
+                    break;
+                case 1:
+                    Serial.println("19200");
+                    break;
+                case 2:
+                    Serial.println("38400");
+                    break;
+                case 3:
+                    Serial.println("57600");
+                    break;
+                case 4:
+                    Serial.println("115200");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+            
+            Serial.print("tx_power_amp_level: ");
+            uint8_t tx_power_amp_level = payload[1];
+            Serial.print(tx_power_amp_level);
+            Serial.print(" (");
+            float tx_power_amp_level_percent = (tx_power_amp_level / 255.0) * 100;
+            Serial.print(tx_power_amp_level_percent);
+            Serial.println("% of maximum value of 255)");
+
+            Serial.print("rx_rf_baud_rate: ");
+            uint8_t rx_rf_baud_rate = payload[2];
+            switch (rx_rf_baud_rate){
+                case 0:
+                    Serial.println("1200");
+                    break;
+                case 1:
+                    Serial.println("9600");
+                    break;
+                case 2:
+                    Serial.println("19200");
+                    break;
+                case 3:
+                    Serial.println("38400");
+                    break;
+                case 4:
+                    Serial.println("57600");
+                    break;
+                case 5:
+                    Serial.println("115200");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("tx_rf_baud_rate: ");
+            uint8_t tx_rf_baud_rate = payload[3];
+            switch (tx_rf_baud_rate){
+                case 0:
+                    Serial.println("1200");
+                    break;
+                case 1:
+                    Serial.println("9600");
+                    break;
+                case 2:
+                    Serial.println("19200");
+                    break;
+                case 3:
+                    Serial.println("38400");
+                    break;
+                case 4:
+                    Serial.println("57600");
+                    break;
+                case 5:
+                    Serial.println("115200");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("rx_modulation: ");
+            uint8_t rx_modulation = payload[4];
+            switch (rx_modulation){
+                case 0:
+                    Serial.println("GFSK");
+                    break;
+                case 1:
+                    Serial.println("AFSK");
+                    break;
+                case 2:
+                    Serial.println("BPSK");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("tx_modulation: ");
+            uint8_t tx_modulation = payload[5];
+            switch (tx_modulation){
+                case 0:
+                    Serial.println("GFSK");
+                    break;
+                case 1:
+                    Serial.println("AFSK");
+                    break;
+                case 2:
+                    Serial.println("BPSK");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("rx_freq: ");
+            uint32_t rx_freq = (payload[6] << 24) | (payload[7] << 16) | (payload[8] << 8) | payload[9];
+            Serial.print(rx_freq);
+            Serial.print("Hz (");
+            float rx_freq_mhz = rx_freq / 1000000.0;
+            Serial.print(rx_freq_mhz);
+            Serial.println("MHz)");
+
+            Serial.print("tx_freq: ");
+            uint32_t tx_freq = (payload[10] << 24) | (payload[11] << 16) | (payload[12] << 8) | payload[13];
+            Serial.print(tx_freq);
+            Serial.print("Hz (");
+            float tx_freq_mhz = tx_freq / 1000000.0;
+            Serial.print(tx_freq_mhz);
+            Serial.println("MHz)");
+
+            Serial.print("source[6]: ");
+            unsigned char source[6] = { payload[14], payload[15], payload[16], payload[17], payload[18], payload[19] };
+            for (int i = 0; i < 6; i++) {
+                Serial.print((char)source[i]);
+            }
+            Serial.println();
+
+            Serial.print("destination[6]: ");
+            unsigned char destination[6] = { payload[20], payload[21], payload[22], payload[23], payload[24], payload[25] };
+            for (int i = 0; i < 6; i++) {
+                Serial.print((char)destination[i]);
+            }
+            Serial.println();
+
+            //TODO: continue from tx_preamble
             break;
+        }
         // A telemetry reply packet.
-        case 7:
+        case 7: {
             Serial.print("op_counter: ");
             uint16_t op_counter = (payload[0] << 8) | payload[1];
             Serial.println(op_counter);
@@ -135,6 +284,7 @@ void decodePacket(byte *payload, byte opcode){
             uint8_t rtc_alarm_flag = payload[17];
             Serial.println(rtc_alarm_flag);
             break;
+        }
         // A firmware revision reply packet.
         case 18:
             Serial.print("firmware_rev: ");
