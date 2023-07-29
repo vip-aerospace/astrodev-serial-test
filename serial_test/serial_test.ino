@@ -360,15 +360,7 @@ void loop() {
     // Read 8 bytes into received header.
     Serial1.readBytes(receivedHeader, 8);
     // Determine the size of the payload as described in the received header.
-    if (receivedHeader[3] == 1 || receivedHeader[3] == 2 || receivedHeader[3] == 3 
-    || receivedHeader[3] == 6 || receivedHeader[3] == 8 || receivedHeader[3] == 9 
-    || receivedHeader[3] == 10 || receivedHeader[3] == 11 || receivedHeader[3] == 13 
-    || receivedHeader[3] == 14 || receivedHeader[3] == 15 || receivedHeader[3] == 16) {
-      payloadsize = 0;
-    } else {
-      payloadsize = (receivedHeader[4] << 8) | receivedHeader[5];
-    }
-    
+    payloadsize = decodeHeader(receivedHeader);
     // If there are bytes in the packet's payload,
     if(payloadsize){
       // receive that payload, plus the two-byte checksum.
@@ -385,5 +377,6 @@ void loop() {
     if(payloadsize){
       printHexDump(receivedPayload, payloadsize + CHECKSUMSIZE);
     }
+    Serial.println();
   }
 }
