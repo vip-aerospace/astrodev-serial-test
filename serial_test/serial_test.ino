@@ -1,5 +1,6 @@
 #include <string.h>
 #include "helpers.h"
+#include "reply.h"
 
 #define HEADERSIZE 8
 #define CHECKSUMSIZE 2
