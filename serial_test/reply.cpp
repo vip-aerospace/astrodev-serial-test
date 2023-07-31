@@ -88,6 +88,7 @@ uint8_t decodeHeader(byte *header){
     }
 }
 
+// Used to decode a replied packet from the radio.
 void decodePacket(byte *payload, byte opcode){
     // Check the packet's opcode to determine the payload structure.
     switch(opcode){
@@ -96,6 +97,7 @@ void decodePacket(byte *payload, byte opcode){
             // No need to decode the data, it is printed raw in the hexdump.
             break;
         // A transceiver configuration packet.
+        // The configuration of the radio is returned as a 34-byte payload.
         case 5: {
             Serial.print("interface_baud_rate: ");
             uint8_t interface_baud_rate = payload[0];
@@ -244,7 +246,376 @@ void decodePacket(byte *payload, byte opcode){
             }
             Serial.println();
 
-            //TODO: continue from tx_preamble
+            Serial.print("tx_preamble: ");
+            uint16_t tx_preamble = (payload[26] << 8) | payload[27];
+            switch (tx_preamble){
+                case 0:
+                    Serial.println("20 flags");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("tx_postamble: ");
+            uint16_t tx_postamble = (payload[28] << 8) | payload[29];
+            switch (tx_postamble){
+                case 0:
+                    Serial.println("20 flags");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.println("function_config: ");
+            uint16_t function_config = (payload[30] << 8) | payload[31];
+
+            Serial.print("  GPIO_B, Pin #10: ");
+            uint16_t gpiob_p10 = function_config & 0b11;
+            switch (gpiob_p10)
+            {
+                case 0b00:
+                    Serial.println("Off Logic Low");
+                    break;
+                case 0b01:
+                    Serial.println("2.0 second Toggle");
+                    break;
+                case 0b10:
+                    Serial.println("TX Packet Toggle");
+                    break;
+                case 0b11:
+                    Serial.println("Rx Packet Toggle");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  Config Pin 1, Pin #14: ");
+            uint16_t config1_p14 = (function_config >> 2) & 0b11;
+            switch (config1_p14)
+            {
+                case 0b00:
+                    Serial.println("Off Logic Low");
+                    break;
+                case 0b01:
+                    Serial.println("Tx/Rx Switch");
+                    break;
+                case 0b10:
+                    Serial.println("2.0 hz WDT");
+                    break;
+                case 0b11:
+                    Serial.println("Rx Packet Toggle");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  External Event, Pin #12: ");
+            uint16_t ee_p12_p = (function_config >> 5) & 0b1;
+            switch (ee_p12_p)
+            {
+                case 0b0:
+                    Serial.print("Pattern A, ");
+                    break;
+                case 0b1:
+                    Serial.print("Pattern B, ");
+                    break;
+                default:
+                    Serial.print("Unknown");
+                    break;
+            }
+            uint16_t ee_p12 = (function_config >> 4) & 0b11;
+            switch (ee_p12)
+            {
+                case 0b00:
+                    Serial.println("Off Logic Low");
+                    break;
+                case 0b01:
+                    Serial.println("Enable");
+                    break;
+                default:
+                    Serial.print("Unknown");
+                    break;
+            }
+
+            Serial.println("  CRC Functions:");
+
+            Serial.print("    RX CRC ");
+            uint16_t rx_crc = (function_config >> 6) & 0b1;
+            switch (rx_crc)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("    TX CRC (TBD) ");
+            uint16_t tx_crc = (function_config >> 7) & 0b1;
+            switch (tx_crc)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.println("  Telemetry Functions:");
+
+            Serial.print("    Telemetry Packet Logging ");
+            uint16_t tel_pack_log = (function_config >> 8) & 0b1;
+            switch (tel_pack_log)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("    Logging Rate: ");
+            uint16_t logging_rate = (function_config >> 9) & 0b11;
+            switch (logging_rate)
+            {
+                case 0b00:
+                    Serial.println("1/10 Hz");
+                    break;
+                case 0b01:
+                    Serial.println("1 Hz");
+                    break;
+                case 0b10:
+                    Serial.println("2 Hz");
+                    break;
+                case 0b11:
+                    Serial.println("4 Hz");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("    Telemetry Dump ");
+            uint16_t tel_dump = (function_config >> 11) & 0b1;
+            switch (tel_dump)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.println("  Beacon Functions:");
+
+            Serial.print("    Ping Return ");
+            uint16_t ping_rtn = (function_config >> 12) & 0b1;
+            switch (ping_rtn)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("    Code Upload ");
+            uint16_t code_upld = (function_config >> 13) & 0b1;
+            switch (code_upld)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("    System Reset ");
+            uint16_t sys_rst = (function_config >> 14) & 0b1;
+            switch (sys_rst)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.println("  Factory Default Restored:");
+
+            Serial.print("    Factory settings restore complete flag: ");
+            uint16_t fact_rst = (function_config >> 15) & 0b1;
+            switch (fact_rst)
+            {
+                case 0b0:
+                    Serial.println("False");
+                    break;
+                case 0b1:
+                    Serial.println("True");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            //TODO: complete function_config2
+            Serial.println("function_config2: ");
+            uint16_t function_config2 = (payload[32] << 8) | payload[33];
+
+            Serial.print("  AFC ");
+            uint16_t afc = function_config2 & 0b1;
+            switch (afc)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  RX CW: ");
+            uint16_t rx_cw = (function_config2 >> 1) & 0b1;
+            switch (rx_cw)
+            {
+                case 0b0:
+                    Serial.println("False");
+                    break;
+                case 0b1:
+                    Serial.println("True");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  TX CW: ");
+            uint16_t tx_cw = (function_config2 >> 2) & 0b1;
+            switch (tx_cw)
+            {
+                case 0b0:
+                    Serial.println("False");
+                    break;
+                case 0b1:
+                    Serial.println("True");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  Radio Alarm Transmit ");
+            uint16_t radio_alarm_xmit = (function_config2 >> 3) & 0b1;
+            switch (radio_alarm_xmit)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  Encryption A ");
+            uint16_t enc_a = (function_config2 >> 4) & 0b1;
+            switch (enc_a)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  Encryption B ");
+            uint16_t enc_b = (function_config2 >> 5) & 0b1;
+            switch (enc_b)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  Radio Configration Duration ");
+            uint16_t radio_config_dur = (function_config2 >> 6) & 0b1;
+            switch (radio_config_dur)
+            {
+                case 0b0:
+                    Serial.println("Disabled");
+                    break;
+                case 0b1:
+                    Serial.println("Enabled");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            Serial.print("  No AX25 Header but has 16 bit CRC: ");
+            uint16_t no_ax25_header = (function_config2 >> 7) & 0b1;
+            switch (no_ax25_header)
+            {
+                case 0b0:
+                    Serial.println("False");
+                    break;
+                case 0b1:
+                    Serial.println("True");
+                    break;
+                default:
+                    Serial.println("Unknown");
+                    break;
+            }
+
+            // Remaining bits in function_config2 are BSL TBD
+
             break;
         }
         // A telemetry reply packet.
@@ -301,12 +672,16 @@ void ackHelper(byte* header){
         Serial.println("Ack");
     } else if ((header[4] & 0x0F) == 0x0F && header[5] == 0xFF) {
         Serial.println("Nack");
+        Serial.print("BSL");
     }
 
     // The high 4 bits of the payload size are UART status flags.
-    Serial.print("UART status bits: ");
-    Serial.print(header[4] & 0x80);
-    Serial.print(header[4] & 0x40);
-    Serial.print(header[4] & 0x20);
+    Serial.print("Transmit Buffer Full Flag: ");
     Serial.println(header[4] & 0x10);
+    Serial.print("GPIO A State: ");
+    Serial.println(header[4] & 0x20);
+    Serial.print("GPIO B State: ");
+    Serial.println(header[4] & 0x40);
+    Serial.print("External Event State: ");
+    Serial.println(header[4] & 0x80);
 }

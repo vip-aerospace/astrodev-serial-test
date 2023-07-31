@@ -377,6 +377,6 @@ void loop() {
     if(payloadsize){
       printHexDump(receivedPayload, payloadsize + CHECKSUMSIZE);
     }
-    Serial.println();
+    Serial.println("------------------------------------------------------------------------");
   }
 }

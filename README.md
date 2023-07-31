@@ -92,4 +92,19 @@ Default data for packets to be sent to the radio is included at the top of the s
 - `diopayload[]`: The Digital I/O key.
 - `fastpapayload[]`: The power amplifier configuration structure.
 
-Received data is printed to the Serial Monitor in a raw bytes format, with the header printed on its own line before the packet's payload. There is no processing of this data beyond printing the raw received bytes.
+## Replies from the radio
+Received data is decoded for the four types of radio reply packets that contain a payload. These are:
+- Received Data (opcode `0x2004`): The raw data packet received by the radio's RF connection.
+- Transceiver Configuration (opcode `0x2005`): The radio configuration struct indicating the current status of the radio's settings.
+- Telemetry (opcode `0x2007`): The radio telemetry struct indicating the current usage and status statistics of the radio.
+- Firmware Revision (opcode `0x2012`): A four-byte float representing the current firmware revision flashed to the radio.
+
+<img src="documentation\decoding.png" alt="The Transceiver Configuration struct decoded and printed to the Serial Monitor.">
+
+For header-only reply packets without a payload, the header data is read to determine the type of reply and whether it is an ack or not-ack. The UART status bits are also decoded.
+
+<img src="documentation\decoding-header.png" alt="The no-op ack header and UART status bits being decoded and printed to the Serial Monitor.">
+
+For all replies, the raw packet in its entirety is printed.
+
+
