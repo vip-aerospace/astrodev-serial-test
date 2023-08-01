@@ -22,11 +22,11 @@ uint8_t decodeHeader(byte *header){
             return 0;
         // 0x04: Received Data
         case 4:
-            Serial.print("Received Data");
+            Serial.print("Received Data ");
             return (header[4] << 8) | header[5];
         // 0x05: Transceiver Configuration
         case 5:
-            Serial.print("Transceiver Configuration");
+            Serial.print("Transceiver Configuration ");
             return (header[4] << 8) | header[5];
         // 0x06: Set Transceiver Configuration Ack
         case 6:
@@ -35,7 +35,7 @@ uint8_t decodeHeader(byte *header){
             return 0;
         // 0x07: Telemetry
         case 7:
-            Serial.print("Telemetry");
+            Serial.print("Telemetry ");
             return (header[4] << 8) | header[5];
         // 0x08: Write Flash Ack
         case 8:
@@ -59,7 +59,7 @@ uint8_t decodeHeader(byte *header){
             return 0;
         // 0x12: Firmware Rev
         case 18:
-            Serial.print("Firmware Rev");
+            Serial.print("Firmware Rev ");
             return (header[4] << 8) | header[5];
         // 0x13: DIO Key Write Ack
         case 19:
@@ -83,7 +83,7 @@ uint8_t decodeHeader(byte *header){
             return 0;
         // Any other value
         default:
-            Serial.print("Unknown");
+            Serial.print("Unknown ");
             return 0;
     }
 }
@@ -337,7 +337,7 @@ void decodePacket(byte *payload, byte opcode){
                     Serial.println("Enable");
                     break;
                 default:
-                    Serial.print("Unknown");
+                    Serial.println("Unknown");
                     break;
             }
 

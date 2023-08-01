@@ -151,7 +151,7 @@ void loop() {
 
         // Transmit the packet to the radio.
         Serial1.write(packet, packetSize);
-        Serial.println("Sent transmit packet");
+        Serial.println("Sent transceiver configuration packet");
         printHexDump(packet, packetSize);
         
         // Free the packet's memory before moving on.
