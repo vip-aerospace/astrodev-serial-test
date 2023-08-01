@@ -19,7 +19,7 @@ void setHeader(byte *header, byte command, size_t payloadsize){
   // The high byte of the packet size.
   header[4] = 0x00;
   // The low byte of the packet size.
-  header[5] = reverseBits(payloadsize);
+  header[5] = payloadsize;
   // Calculate the two-byte checksum.
   calcCS(&header[2], 4, &header[6]);
 }
@@ -51,17 +51,6 @@ void calcCS(uint8_t *data, uint16_t size, uint8_t *ckloc) {
   ckloc[0] = ck_a;
   // Store the low byte.
   ckloc[1] = ck_b;
-}
-
-// Function to reverse the bit order of a byte.
-uint8_t reverseBits(uint8_t b) {
-  uint8_t result = 0;
-  for (int i = 0; i < 8; i++) {
-    result <<= 1;
-    result |= (b & 1);
-    b >>= 1;
-  }
-  return result;
 }
 
 // Prints a hex dump of the designated memory location.

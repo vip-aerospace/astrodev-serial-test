@@ -659,7 +659,7 @@ void decodePacket(byte *payload, byte opcode){
         // A firmware revision reply packet.
         case 18:
             Serial.print("firmware_rev: ");
-            float firmware_rev = (payload[0] << 24) | (payload[1] << 16) | (payload[2] << 8) | payload[3];
+            float firmware_rev = (payload[3] << 24) | (payload[2] << 16) | (payload[1] << 8) | payload[0];
             Serial.println(firmware_rev);
             break;
     }
