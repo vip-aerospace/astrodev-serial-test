@@ -12,78 +12,78 @@ uint8_t decodeHeader(byte *header){
             return 0;
         // 0x02: Reset Ack
         case 2:
-            Serial.println("Reset ");
+            Serial.print("Reset ");
             ackHelper(header);
             return 0;
         // 0x03: Transmit Ack
         case 3:
-            Serial.println("Transmit ");
+            Serial.print("Transmit ");
             ackHelper(header);
             return 0;
         // 0x04: Received Data
         case 4:
-            Serial.println("Received Data");
+            Serial.print("Received Data");
             return (header[4] << 8) | header[5];
         // 0x05: Transceiver Configuration
         case 5:
-            Serial.println("Transceiver Configuration");
+            Serial.print("Transceiver Configuration");
             return (header[4] << 8) | header[5];
         // 0x06: Set Transceiver Configuration Ack
         case 6:
-            Serial.println("Set Transceiver Configuration ");
+            Serial.print("Set Transceiver Configuration ");
             ackHelper(header);
             return 0;
         // 0x07: Telemetry
         case 7:
-            Serial.println("Telemetry");
+            Serial.print("Telemetry");
             return (header[4] << 8) | header[5];
         // 0x08: Write Flash Ack
         case 8:
-            Serial.println("Write Flash ");
+            Serial.print("Write Flash ");
             ackHelper(header);
             return 0;
         // 0x09: RF Configure Ack
         case 9:
-            Serial.println("RF Configure ");
+            Serial.print("RF Configure ");
             ackHelper(header);
             return 0;
         // 0x10: Beacon Data Ack
         case 16:
-            Serial.println("Beacon Data ");
+            Serial.print("Beacon Data ");
             ackHelper(header);
             return 0;
         // 0x11: Beacon Configure Ack
         case 17:
-            Serial.println("Beacon Configure ");
+            Serial.print("Beacon Configure ");
             ackHelper(header);
             return 0;
         // 0x12: Firmware Rev
         case 18:
-            Serial.println("Firmware Rev");
+            Serial.print("Firmware Rev");
             return (header[4] << 8) | header[5];
         // 0x13: DIO Key Write Ack
         case 19:
-            Serial.println("DIO Key Write ");
+            Serial.print("DIO Key Write ");
             ackHelper(header);
             return 0;
         // 0x14: Firmware Update Ack
         case 20:
-            Serial.println("Firmware Update ");
+            Serial.print("Firmware Update ");
             ackHelper(header);
             return 0;
         // 0x15: Firmware Packet Ack
         case 21:
-            Serial.println("Firmware Packet ");
+            Serial.print("Firmware Packet ");
             ackHelper(header);
             return 0;
         // 0x20: Fast Set PA Ack
         case 32:
-            Serial.println("Fast Set PA ");
+            Serial.print("Fast Set PA ");
             ackHelper(header);
             return 0;
         // Any other value
         default:
-            Serial.println("Unknown");
+            Serial.print("Unknown");
             return 0;
     }
 }
