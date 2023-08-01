@@ -217,18 +217,18 @@ void decodePacket(byte *payload, byte opcode){
             }
 
             Serial.print("rx_freq: ");
-            uint32_t rx_freq = (payload[6] << 24) | (payload[7] << 16) | (payload[8] << 8) | payload[9];
+            uint32_t rx_freq = (payload[9] << 24) | (payload[8] << 16) | (payload[7] << 8) | payload[6];
             Serial.print(rx_freq);
             Serial.print("Hz (");
-            float rx_freq_mhz = rx_freq / 1000000.0;
+            float rx_freq_mhz = rx_freq / 1000.0;
             Serial.print(rx_freq_mhz);
             Serial.println("MHz)");
 
             Serial.print("tx_freq: ");
-            uint32_t tx_freq = (payload[10] << 24) | (payload[11] << 16) | (payload[12] << 8) | payload[13];
+            uint32_t tx_freq = (payload[13] << 24) | (payload[12] << 16) | (payload[11] << 8) | payload[10];
             Serial.print(tx_freq);
             Serial.print("Hz (");
-            float tx_freq_mhz = tx_freq / 1000000.0;
+            float tx_freq_mhz = tx_freq / 1000.0;
             Serial.print(tx_freq_mhz);
             Serial.println("MHz)");
 
@@ -621,15 +621,15 @@ void decodePacket(byte *payload, byte opcode){
         // A telemetry reply packet.
         case 7: {
             Serial.print("op_counter: ");
-            uint16_t op_counter = (payload[0] << 8) | payload[1];
+            uint16_t op_counter = (payload[1] << 8) | payload[0];
             Serial.println(op_counter);
 
             Serial.print("msp430_temp: ");
-            int16_t msp430_temp = (payload[2] << 8) | payload[3];
+            int16_t msp430_temp = (payload[3] << 8) | payload[2];
             Serial.println(msp430_temp);
 
             Serial.print("time_count[3]: ");
-            uint32_t time_count = 0x00 | (payload[4] << 16) | (payload[5] << 8) | payload[6];
+            uint32_t time_count = 0x00 | (payload[6] << 16) | (payload[5] << 8) | payload[4];
             Serial.println(time_count);
             Serial.print("corresponding to ");
             Serial.print(time_count * 2.5);
@@ -640,11 +640,11 @@ void decodePacket(byte *payload, byte opcode){
             Serial.println(rssi);
 
             Serial.print("bytes_received: ");
-            uint32_t bytes_received = (payload[8] << 24) | (payload[9] << 16) | (payload[10] << 8) | payload[11];
+            uint32_t bytes_received = (payload[11] << 24) | (payload[10] << 16) | (payload[9] << 8) | payload[8];
             Serial.println(bytes_received);
 
             Serial.print("bytes_transmitted: ");
-            uint32_t bytes_transmitted = (payload[12] << 24) | (payload[13] << 16) | (payload[14] << 8) | payload[15];
+            uint32_t bytes_transmitted = (payload[15] << 24) | (payload[14] << 16) | (payload[13] << 8) | payload[12];
             Serial.println(bytes_transmitted);
 
             Serial.print("rssi_lastpacket: ");
