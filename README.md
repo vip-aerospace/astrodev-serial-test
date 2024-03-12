@@ -2,26 +2,6 @@
 This is an Arduino sketch used to test serial communication to the Astrodev (Li-3) radio. 
 
 ## Setup
-There are two ways to use this program: back-to-back testing between Teensys, and direct testing with an Astrodev radio.
-### Back-to-Back Testing
-To test the program and verify the data you are sending, connect two Teensys as follows:
-
-- Connect the ground pins of both Teensys.
-- Connect the Serial1 TX pin of Teensy 1 (Pin 1) to the Serial1 RX pin of Teensy 2 (Pin 0).
-- Connect the Serial1 RX pin of Teensy 1 (Pin 0) to the Serial1 TX pin of Teensy 2 (Pin 1).
-
-Upload the code to **both** Teensys, and open a serial monitor for each board. Commanding one board to send a packet will result in that packet appearing on the other Teensy's Serial Monitor.
-
-<img src="documentation\back-to-back.png" alt="Packet data being transmitted from one Teensy to another Teensy.">
-
-NOTE: Arduino IDE 2 does not allow opening multiple windows and Serial Monitors in parallel. It is still possible to use the program:
-
-- With both Teensys connected to the same computer, you can send a command to one Teensy, seeing the transmitted packet on the Serial Monitor. You can then switch the active board to the other Teensy and see what the other Teensy has received. The Serial Monitor is **not** cleared after switching the active board.
-- You can also use two computers, each connected to a Teensy running Arduino IDE 2.
-
-Use of [Arduino IDE 1.8.19](https://www.arduino.cc/en/software) is highly recommended for back-to-back testing.
-
-### Direct Astrodev Testing
 When ready to test the Astrodev radio, connect it to the Teensy as follows:
 
 - Connect the ground pin of the Teensy to the ground pin of the Astrodev radio.
